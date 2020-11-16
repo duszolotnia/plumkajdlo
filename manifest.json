@@ -31,10 +31,5 @@
             "48": "icons/braterstwo1-48.png",
             "96": "icons/braterstwo1-96.png"
         }
-    },
-    "browser_specific_settings": {
-        "gecko": {
-          "id": "plumkajdlo@kdolech.pl"
-        }
     }
 }

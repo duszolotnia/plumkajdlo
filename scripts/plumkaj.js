@@ -23,11 +23,11 @@ const AVAIL_TITLES = [
   "Celnie wypatrzyłem, że jest o Tobie głośno ;)"
 ];
 //TESTING - set last checked date to a week ago
-//lastCheckedDatetime.setDate(lastCheckedDatetime.getDate() - 7);
+//lastCheckedDatetime.setDate(lastCheckedDatetime.getDate() - 10);
 
 // Opening settings page on icon click
 function openPage() {
-  browser.tabs.create({
+  chrome.tabs.create({
     url: "options.html"
   });
 }
@@ -123,15 +123,11 @@ async function getNewComments(topic){
 
 function showNotification(id, title, message, sound=false, volume=0.3){
   //console.log("Wysylam powiadomienie...");
-  browser.notifications.create(id, {
+  chrome.notifications.create(id, {
     "type": "basic",
-    "iconUrl": browser.extension.getURL("icons/braterstwo1-48.png"),
+    "iconUrl": chrome.extension.getURL("icons/braterstwo1-48.png"),
     "title": title,
     "message": message,
-    "items":[
-      {"title": "target",
-      "message": "https://google.com/"}
-    ]
   });
 
   if(sound){
@@ -195,6 +191,14 @@ function pickRandomTitle(){
   return AVAIL_TITLES[randomId];
 }
 
+async function updateSettings(){
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"], function(res){
+      resolve(res);
+    });
+  });
+}
+
 // ---------------------------------
 //             MAIN LOOP
 // ---------------------------------
@@ -205,25 +209,19 @@ async function main(){
   //TODO: Check current settings
   var topics;
   var newComments = [];
-  let gettingSettings = browser.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"]);
-  await gettingSettings.then(res => {
-    SETTINGS.nick = res.nick;
-    SETTINGS.color = res.color;
-    SETTINGS.use_sounds = res.use_sounds;
-    SETTINGS.sound = res.sound;
-    SETTINGS.highlight = res.highlight;
-    SETTINGS.volume = res.volume;
-  })
+  var success = await updateSettings();
+  SETTINGS = success;
 
   // if nick not found open settings page and quit
   if(!SETTINGS.nick) {
     openPage();
+    console.log("Brak ustawien, czekam 5min->" , SETTINGS);
     currentTimeout = setTimeout(main, 300000); // every 5 minutes by default
     return 1;
   }
 
-  console.log("Teraz jest " + new Date());
-  console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
+  //console.log("Teraz jest " + new Date());
+  //console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
 
   function handleMessage(request, sender, sendResponse) {
     console.log("Message from the content script: " +
@@ -232,7 +230,7 @@ async function main(){
   
     sendResponse({settings: SETTINGS});
   }
-  browser.runtime.onMessage.addListener(handleMessage);
+  chrome.runtime.onMessage.addListener(handleMessage);
 
   topics = await getActiveTopics();
   // Parse times to valid Date objects and remove old topics from list
@@ -279,10 +277,10 @@ async function main(){
 } //main() END
 
 
-browser.browserAction.onClicked.addListener(openPage);
-browser.notifications.onClicked.addListener(function(notificationId) {
+chrome.browserAction.onClicked.addListener(openPage);
+chrome.notifications.onClicked.addListener(function(notificationId) {
   //console.log('Notification ' + notificationId + ' was clicked by the user');
   let notificationUrl = notificationId.split(SPLIT_CHAR)[0];
-  browser.windows.create({url: notificationUrl});
+  chrome.windows.create({url: notificationUrl});
 });
 main();

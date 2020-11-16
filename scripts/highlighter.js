@@ -16,13 +16,18 @@ function sanitizeString(str){
     return str.trim();
 }
 
+async function updateSettings(){
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({message: "send settings please"}, function(ret){
+            resolve(ret.settings);
+            //console.log("Got thiese settings: ", ret);
+        });
+    });
+}
+
 async function main(){
     var SETTINGS = {};
-    var gettingSettings = browser.runtime.sendMessage({message: "send settings please"});
-    await gettingSettings.then( ret => { 
-        SETTINGS = ret.settings;
-        //console.log("Got thiese settings: ", SETTINGS);
-    })
+    SETTINGS = await updateSettings();
 
     SETTINGS.nick = sanitizeString(SETTINGS.nick);
 

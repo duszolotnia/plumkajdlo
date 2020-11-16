@@ -2,24 +2,24 @@ function getRadioValue(name, allowedVallues=[]){
   var radios = document.getElementsByName(name);
   for (var i = 0, length = radios.length; i < length; i++) {
     if (radios[i].checked) {
-      console.log("OO, znalazlem cos dla " + name + "=> " + radios[i].value);
+      //console.log("OO, znalazlem cos dla " + name + "=> " + radios[i].value);
       if(!allowedVallues){
-        console.log("CHECKED: " + radios[i].value);
+        //console.log("CHECKED: " + radios[i].value);
         return radios[i].value;
       }
       else if(allowedVallues.includes(radios[i].value)){
-        console.log("CHECKED: " + radios[i].value);
+        //console.log("CHECKED: " + radios[i].value);
         return radios[i].value;
       }
     }
   }
-  console.log("Nie znalazlem zaznaczonego pola");
+  //console.log("Nie znalazlem zaznaczonego pola");
   return allowedVallues[0];
 }
 
 function saveOptions(e) {
     e.preventDefault();
-    browser.storage.sync.set({
+    chrome.storage.sync.set({
       nick: document.querySelector("#nick").value,
       color: document.querySelector("#color").value,
       use_sounds: parseInt(getRadioValue("use_sounds", ['1', '0'])),
@@ -32,7 +32,7 @@ function saveOptions(e) {
 
     // at the end stop current wait between main() executions and 
     // run it right away with new parameters
-    var gettingPage = browser.runtime.getBackgroundPage();
+    var gettingPage = runtime.getBackgroundPage();
     gettingPage.then(w => {
       w.resetCurrentTimeout();
     });
@@ -43,8 +43,8 @@ function saveOptions(e) {
   function restoreOptions() {
   
     function setCurrentChoice(result) {
-      console.log("Wczytano nastepujace ustawienia...");
-      console.log(result);
+      //console.log("Wczytano nastepujace ustawienia...");
+      //console.log(result);
       // Display currently stored settings
       document.querySelector("#nick").value = result.nick || ""; //username
       document.querySelector("#color").value = result.color || "#3E9DBD"; // highlight color
@@ -81,12 +81,7 @@ function saveOptions(e) {
       
     }
   
-    function onError(error) {
-      console.log(`Error: ${error}`);
-    }
-  
-    let getting = browser.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"]);
-    getting.then(setCurrentChoice, onError);
+    chrome.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"], setCurrentChoice);
   }
   
   function testNotification(){
@@ -99,14 +94,14 @@ function saveOptions(e) {
       volume: (parseFloat(document.querySelector("#volume").value) / 100)
     }
 
-    var bcg = browser.runtime.getBackgroundPage();
-    bcg.then(win => {
-      console.log("Temporary settings used:");
-      console.log(tmpSettings)
-      if(tmpSettings.use_sounds)
-        win.showNotification("https://braterstwo.eu|test-00", "To jest powiadomienie testowe!", "Ja grab, ja grab. Wisla wisla jak mnie słyszysz?\nKliknij we mnie aby przejść na stronę braterstwa.\n\nPS Nie zapomnij zapisać ustawień ;)", "../media/"+tmpSettings.sound, tmpSettings.volume);
-      else
-        win.showNotification("https://braterstwo.eu|test-00", "To jest powiadomienie testowe!", "Ja grab, ja grab. Wisla wisla jak mnie słyszysz?\nKliknij we mnie aby przejść na stronę braterstwa.\n\nPS Nie zapomnij zapisać ustawień ;)");
+    chrome.runtime.getBackgroundPage(function (win){
+        //console.log("Temporary settings used:");
+        //console.log(tmpSettings)
+        if(tmpSettings.use_sounds)
+          win.showNotification("https://braterstwo.eu|test-00", "To jest powiadomienie testowe!", "Ja grab, ja grab. Wisla wisla jak mnie słyszysz?\nKliknij we mnie aby przejść na stronę braterstwa.\n\nPS Nie zapomnij zapisać ustawień ;)", "../media/"+tmpSettings.sound, tmpSettings.volume);
+        else
+          win.showNotification("https://braterstwo.eu|test-00", "To jest powiadomienie testowe!", "Ja grab, ja grab. Wisla wisla jak mnie słyszysz?\nKliknij we mnie aby przejść na stronę braterstwa.\n\nPS Nie zapomnij zapisać ustawień ;)");
+      
     });
   }
 
