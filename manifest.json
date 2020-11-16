@@ -1,0 +1,40 @@
+{
+    "manifest_version": 2,
+    "name": "Plumkajdło | Braterstwo.eu",
+    "version": "1.0.0",
+    "description": "Wyświetla powiadomienia gdy zostaniesz oznaczony w jakimś nowym poście.",
+    "icons": {
+      "48": "icons/braterstwo1-48.png",
+      "96": "icons/braterstwo1-96.png"
+    },
+    "options_ui": {
+        "page": "options.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://braterstwo.eu/tforum/t/*"],
+            "js": ["scripts/highlighter.js"]
+        }
+    ],
+    "background": {
+        "scripts": [
+            "scripts/howler.min.js",
+            "scripts/plumkaj.js"
+        ]
+    },
+    "permissions": [
+        "notifications",
+        "storage"
+    ],
+    "browser_action": {
+        "default_icon": {
+            "48": "icons/braterstwo1-48.png",
+            "96": "icons/braterstwo1-96.png"
+        }
+    },
+    "browser_specific_settings": {
+        "gecko": {
+          "id": "plumkajdlo@kdolech.pl"
+        }
+    }
+}

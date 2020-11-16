@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Plumkajdło - Ustawienia</title>
+    <meta charset="utf-8">
+    <meta name="author" value="Krzysztof Dolech">
+    <link rel="icon" type="image/png" href="../icons/braterstwo1-48.png">
+    <link rel="stylesheet" type="text/css" href="./scripts/bootstrap.min.css">
+  </head>
+
+  <body>
+
+    <div id="container" class="col-md-6" style="margin: auto; margin-top: 25px;">
+
+      <h2 style="text-align: center;">Witaj, członku <a href="https://braterstwo.eu/" style="color: #A2997D" target="_blank">Braterstwa</a>!</h2>
+      <br>
+    <div style="text-align: justify;">
+      Jest mi niezmierie miło, że zdecydowałeś się wypróbować Plumkajdło - rozszerzenie 
+      do implementacji powiadomień o oznaczeniach!
+      Po dokładne informacje odnośnie drogi rozwoju tego narzędzia i nadchodzących funkcji 
+      zapraszam na <a href="#" target="_blank">Plumkajdłowego Githuba!</a><br>
+      <strong>Tyle drogą wstępu. Najpierw muszę poznać Twój nick!</strong><br>
+      <br>
+    </div>
+
+<form>
+  <div class="form-group col-md-4">
+    <label for="nick">Ty: "Cześć! Na braterstwo.eu zwą mnie</label> 
+    <input id="nick" name="nick" placeholder="superStrzelec12" type="text" class="form-control" required="required">
+    <span id="colorHelpBlock" class="form-text text-muted">Tutaj nie liczy się wielkość liter</span>
+  </div>
+
+  <strong>Niżej możesz dostosować ustawienia opcjonalne:</strong><br><br>
+
+  <div class="row">
+&nbsp;&nbsp;&nbsp;
+  <div class="form-group col-md-4">
+    <label>Czy używać dźwięków powiadomień?</label> 
+    <div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input name="use_sounds" id="use_sounds_0" type="radio" class="custom-control-input" value="1"> 
+        <label for="use_sounds_0" class="custom-control-label">Tak</label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input name="use_sounds" id="use_sounds_1" type="radio" class="custom-control-input" value="0"> 
+        <label for="use_sounds_1" class="custom-control-label">Nie</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group col-md-2"></div>
+
+    <div class="form-group col-md-5">
+      <label>Wybierz dźwięk powiadomienia</label> 
+      <div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input name="sound" id="sound_0" type="radio" class="custom-control-input" value="strzala.mp3" aria-describedby="radioHelpBlock" required="required"> 
+          <label for="sound_0" class="custom-control-label">Strzała</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input name="sound" id="sound_1" type="radio" class="custom-control-input" value="cheerful.mp3" aria-describedby="radioHelpBlock" required="required"> 
+          <label for="sound_1" class="custom-control-label">Cheerful</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input name="sound" id="sound_2" type="radio" class="custom-control-input" value="deduction.mp3" aria-describedby="radioHelpBlock" required="required"> 
+          <label for="sound_2" class="custom-control-label" >Deduction</label>
+        </div> 
+        <span id="radioHelpBlock" class="form-text text-muted">Aby sprawdzić dźwięk wygeneruj powiadomienie testowe</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    &nbsp;&nbsp;&nbsp;
+      <div class="form-group col-md-4">
+        <label>Ustaw poziom głośności dźwięku: <span id="volume-display"></span>%</label> 
+        <div>
+          <div class="custom-control custom-control">
+            <input name="volume" id="volume" type="range"  value="30" min="1" max="100" snap="1">
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <br>
+
+  <div class="form-group col-md-12">
+    <label>Czy podczas przeglądania forum podświetlać tekst, w którym zostałeś/łaś oznaczony/a?</label> 
+    <div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input name="highlight" id="highlight_0" type="radio" class="custom-control-input" value="partial"> 
+        <label for="highlight_0" class="custom-control-label">Zaznacz tylko mój nick w tekście</label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input name="highlight" id="highlight_1" type="radio" class="custom-control-input" value="full"> 
+        <label for="highlight_1" class="custom-control-label">Zaznaczaj całe teksty, w których mnie oznaczono</label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input name="highlight" id="highlight_2" type="radio" class="custom-control-input" value="none"> 
+        <label for="highlight_2" class="custom-control-label">Nie zaznaczaj</label>
+      </div>
+    </div>
+    <span id="colorHelpBlock" class="form-text text-muted">Aby zastosować zmianę zaznaczania możliwe, że będziesz musiał zrestartować przeglarkę</span>
+  </div>
+
+  <br>
+
+  <div class="form-group col-md-7">
+    <label for="color">Wybierz kolor, którego będę używał do zaznaczania w/w tekstów</label> 
+    <input id="color" name="color" type="color" aria-describedby="colorHelpBlock" class="form-control"> 
+    <span id="colorHelpBlock" class="form-text text-muted">Aby zastosować zmianę koloru możliwe, że będziesz musiał zrestartować przeglarkę</span>
+  </div> 
+
+  <br>
+
+  <div class="row">
+    <div class="form-group col-md-2" style="margin: auto;"></div>
+    <div class="form-group col-md-2" style="margin: auto;">
+      <button name="submit" type="submit" class="btn btn-primary">Zapisz ustawienia</button>
+    </div>
+  
+    <div class="form-group col-md-2" style="margin: auto;">
+      <button name="powiadomienie" type="button" id="powiadomienie" class="btn btn-danger">Wygeneruj próbne powiadomienie</button>
+    </div>
+    <div class="form-group col-md-3" style="margin: auto;"></div>
+  </div>
+</form>
+<span style="font-size: 0.6em; color: gray">Plumkajdło v1.0.0 by Krzysztof Dolech</span>
+    </div> <!-- WRAPPER END -->
+
+    <script src="../scripts/options.js"></script>
+
+  </body>
+
+</html>
