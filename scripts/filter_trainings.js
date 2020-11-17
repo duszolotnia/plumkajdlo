@@ -1,6 +1,6 @@
 function getGunsList(trainingsTable) {
     var elements = Array.from(trainingsTable.querySelectorAll("td:nth-child(3) > span")).map(function(node) {return node.textContent;});
-    return elements.filter(function(item, pos) { return elements.indexOf(item) == pos; });
+    return elements.filter(function(item, pos) { return elements.indexOf(item) == pos; }).sort();
 }
 function showAllTrainingsTableRows(trainingsTable){
     trainingsTable.querySelectorAll('tbody > tr').forEach(row => {
@@ -14,6 +14,25 @@ function hideTrainingsTableRow(trainingsTable, gunName) {
             row.hidden = true;
         }
     })
+}
+function showAllTrainsingSelectors() {
+    var options = document.querySelectorAll("#content > form > table > tbody > tr:nth-child(1) > td > select > option");
+    options.forEach(option => {
+        option.hidden = false;
+        option.removeAttribute("disabled");
+        option.removeAttribute("style");
+    })
+}
+
+function hideTrainingsSelector(gunName) {
+    var options = document.querySelectorAll("#content > form > table > tbody > tr:nth-child(1) > td > select > option");
+    options.forEach(option => {
+        if (!option.innerText.includes(gunName)) {
+            option.hidden = true;
+            option.setAttribute("disabled","true");
+            option.setAttribute("style", "display: none");
+        }
+    });
 }
 
 function addGunsFilter(trainingsTable) {
@@ -34,9 +53,12 @@ function addGunsFilter(trainingsTable) {
         var selectorValue = document.querySelector("#gunsSelector").value;
         if (selectorValue == 'WSZYSTKO') {
             showAllTrainingsTableRows(trainingsTable);
+            showAllTrainsingSelectors();
         } else {
             showAllTrainingsTableRows(trainingsTable);
+            showAllTrainsingSelectors();
             hideTrainingsTableRow(trainingsTable, selectorValue);
+            hideTrainingsSelector(selectorValue)
         }
     };
     var tableGunsHeaderNode = trainingsTable.querySelector("thead > tr > th:nth-child(3) > strong");
