@@ -23,7 +23,7 @@ const AVAIL_TITLES = [
   "Celnie wypatrzyłem, że jest o Tobie głośno ;)"
 ];
 //TESTING - set last checked date to a week ago
-//lastCheckedDatetime.setDate(lastCheckedDatetime.getDate() - 7);
+//lastCheckedDatetime.setHours(lastCheckedDatetime.getHours() - 2);
 
 // Opening settings page on icon click
 function openPage() {
@@ -94,6 +94,7 @@ async function getActiveTopics(){
       table = tableToJson(table[0]);
     })
 
+  //console.log("Tematy:", table);
   return table;
 }
 
@@ -245,7 +246,10 @@ async function main(){
     }
   }
 
-  //console.log(topics.length);
+  if(topics)
+    console.log("Topics with new updates: ", topics);
+  else
+    console.log("No new comments since last update.");
 
   for(let i=0; i<topics.length; i++){
     //console.log("Parsing topic: ", JSON.stringify(topics[i]));
@@ -254,8 +258,9 @@ async function main(){
     newComments = await getNewComments(topics[i]);
 
     // for each comment check for mention in format @nick
+    //console.log("Comments: ", newComments);
     newComments.forEach(comment => {
-      if(comment.content.toLowerCase().includes((MENTION_CHAR + SETTINGS.nick).toLowerCase())){
+      if(comment.content.toLowerCase().includes( (MENTION_CHAR + SETTINGS.nick).toLowerCase() )){
         let msg = "Użytkownik \"@" + comment.user + "\"\n" + 
           "oznaczył cię w komentarzu w temacie: " +
           "\"" + topics[i].temat + "\"\n" +
@@ -274,7 +279,8 @@ async function main(){
   } // forEach topic end
 
   //TODO: Get timeout value from settings
-  currentTimeout = setTimeout(main, 300000); // every 5 minutes by default
+  console.log("Waiting...");
+  currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
 } //main() END
 
