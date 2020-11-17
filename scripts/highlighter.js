@@ -42,7 +42,7 @@ async function main(){
             if(SETTINGS.highlight == "full"){
                 // highlight full comment
                 let spanned = "<span style='font-weight:bold'>@"+SETTINGS.nick+"</span>";
-                comments[i].style = "background-color: " + hexToRgbA(SETTINGS.color) + "; padding: 10px 7px; margin: -7px; border-radius: 5px;";
+                comments[i].style = "background-color: " + hexToRgbA(SETTINGS.color) + "; padding: 10px 7px; margin: -7px; margin-top: 12px; border-radius: 5px;";
 
                 // nick is sanitized - using this method to preserve other HTML that often in present in this comments
                 comments[i].innerHTML = comments[i].innerHTML.replace(re, spanned);
