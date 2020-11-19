@@ -12,8 +12,23 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://braterstwo.eu/tforum/t/*"],
-            "js": ["scripts/highlighter.js"]
+            "matches": ["https://braterstwo.eu/tforum/t/*"],
+            "js": ["scripts/highlighter.js", 
+                   "scripts/follow_single.js"]
+        },{
+            "matches": [
+                "https://braterstwo.eu/tforum/ogolne/",
+                "https://braterstwo.eu/tforum/wydarzenia/",
+                "https://braterstwo.eu/tforum/sportowe/",
+                "https://braterstwo.eu/tforum/osiagniecia/",
+                "https://braterstwo.eu/tforum/wpa/",
+                "https://braterstwo.eu/tforum/lekarze/",
+                "https://braterstwo.eu/tforum/strzelnice/",
+                "https://braterstwo.eu/tforum/sprzet/",
+                "https://braterstwo.eu/tforum/sklepy/",
+                "https://braterstwo.eu/tforum/oferty/"
+            ],
+            "js": ["scripts/follow.js"] 
         }
     ],
     "background": {
@@ -25,7 +40,7 @@
     "permissions": [
         "notifications",
         "storage",
-        "*://braterstwo.eu/*"
+        "https://braterstwo.eu/*"
     ],
     "browser_action": {
         "default_icon": {

@@ -22,17 +22,6 @@ const AVAIL_TITLES = [
   "Psst... Ktoś o Tobie wspomniał na forum",
   "Celnie wypatrzyłem, że jest o Tobie głośno ;)"
 ];
-const AVAIL_TOPICS = [
-  "Ogólne",
-  "Wydarzenia",
-  "Sportowe",
-  "Osiągnięcia",
-  "WPA",
-  "Badania lekarskie",
-  "Strzelnice",
-  "Sprzęt",
-  "Sklepy"
-];
 //TESTING - set last checked date to a week ago
 //lastCheckedDatetime.setHours(lastCheckedDatetime.getHours() - 2);
 
@@ -184,7 +173,7 @@ async function checkNewPrivateMessages(){
     .then(xmlData => {
       privs = xmlData.getElementsByTagName("tr");
 
-      if(privs){
+      if(privs.length){
         for(let i=(privs.length-1); i >= 0; i--){
           if(privs[i].innerHTML.includes("<span class='red'>(*)</span>")){
             let username = privs[i].innerText.match(/.*\n/gi)[1].trim();
@@ -194,7 +183,9 @@ async function checkNewPrivateMessages(){
             else showNotification(id, "Nowa wiadomość prywatna", msg)
           }
         }
-      }
+      }else console.log("You have no private message threads.")
+
+      console.log("Private messages check end.");
 
     })
 }
@@ -228,6 +219,30 @@ function parseTopicTime(topic){
 function pickRandomTitle(){
   let randomId = Math.floor(Math.random() * AVAIL_TITLES.length);
   return AVAIL_TITLES[randomId];
+}
+
+async function getTopicDetails(tid){
+  /* Returns object {
+    lastCommentDatetime: Date object with datetime of last comment
+    lastCommentUsername: str - username of last user to comment
+    title: str - topic title
+  } */
+  var topic = {};
+  var url = "https://braterstwo.eu/tforum/t/"+tid+"/";
+  var comment;
+
+  await fetch(url, {credentials: "omit"}) // no need for credentials since only common sections can be followed
+    .then(resp => resp.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
+    .then(xmlData => {
+      comment = xmlData.getElementsByClassName("comment");
+      comment = parseComment(comment[comment.length-1]);
+      topic.lastCommentUsername = comment.user;
+      topic.lastCommentDatetime = comment.datetime;
+      topic.title = xmlData.querySelector("h4").textContent;
+    });
+
+  return topic;
 }
 
 // ---------------------------------
@@ -264,11 +279,8 @@ async function main(){
   console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
 
   function handleMessage(request, sender, sendResponse) {
-    console.log("Message from the content script: " +
-      request.message);
-    console.log("Returning settings to sender");
-  
-    sendResponse({settings: SETTINGS});
+      if(request.message == 'send settings please')
+        sendResponse({settings: SETTINGS})
   }
   browser.runtime.onMessage.addListener(handleMessage);
 
@@ -283,7 +295,7 @@ async function main(){
     }
   }
 
-  if(topics)
+  if(topics.length)
     console.log("Topics with new updates: ", topics);
   else
     console.log("No new comments since last update.");
@@ -302,7 +314,7 @@ async function main(){
           "oznaczył cię w komentarzu w temacie: " +
           "\"" + topics[i].temat + "\"\n" +
           "w sekcji: \"" + topics[i].sekcja + "\"\n\n" + 
-          "Kliknij w okienko by otworzyć ten temat w nowym oknie.";
+          "Kliknij w okienko by otworzyć ten temat w nowej karcie.";
 
         // set notification ID to have url of topic to open
         // add random integer from range [1-10,000) so even in mentioned multiple times in single topic ID will be unique
@@ -315,8 +327,42 @@ async function main(){
     }); //forEach comment end
   } // forEach topic end
 
-  //TODO: Get timeout value from settings
-  //console.log("Waiting...");
+  // Check for updates in followed topics
+  console.log("Checking followed topics...");
+  let gettingTopics = browser.storage.local.get("followedTopics");
+  let freezeLastCheckedDatetime = lastCheckedDatetime;
+
+  gettingTopics.then(res => {
+    if(res.followedTopics == undefined){
+        // no topics to check - for better of universe let's set it to proper empty list
+        browser.storage.local.set({ followedTopics: [] });
+    }else if(res.followedTopics.length){
+
+        // if at least 1 topic is followed check if there were any updates
+        let topic={};
+        for(let i=0; i<res.followedTopics.length; i++){
+          getTopic = getTopicDetails(res.followedTopics[i]);
+          getTopic.then(topic => {
+            let id, msg;
+            console.log("Topic primise: ", topic);
+            if(topic.lastCommentDatetime > freezeLastCheckedDatetime){
+              console.log("Sending notification about topic: ", topic.title);
+              id = "https://braterstwo.eu/tforum/t/"+res.followedTopics[i]+"/#amv"+SPLIT_CHAR+"topicNotify";
+              msg = "Użytkownik @" + topic.lastCommentUsername + " dodał komentarz do tematu: " +
+              "\""+topic.title+"\"\n\n" + 
+              "Kliknij mnie, aby otworzyć ten wątek w nowej karcie.";
+
+              if(SETTINGS.use_sounds) showNotification(id, "Nowy komentarz w obserwowanym wątku", msg, "../media/"+SETTINGS.sound, SETTINGS.volume);
+              else showNotification(id, "Nowy komentarz w obserwowanym wątku", msg);
+            }
+
+          });
+        }
+
+    } 
+  });
+
+  console.log("Job well done");
   currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
 } //main() END
