@@ -18,6 +18,7 @@ function sanitizeString(str){
 
 async function main(){
     var SETTINGS = {};
+    // using messaging instead of directly calling storage due to inconsistent and long wait times
     var gettingSettings = browser.runtime.sendMessage({message: "send settings please"});
     await gettingSettings.then( ret => { 
         SETTINGS = ret.settings;
