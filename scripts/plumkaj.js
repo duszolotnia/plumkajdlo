@@ -140,10 +140,6 @@ function showNotification(id, title, message, sound=false, volume=0.3){
     "iconUrl": browser.extension.getURL("icons/braterstwo1-48.png"),
     "title": title,
     "message": message,
-    "items":[
-      {"title": "target",
-      "message": "https://google.com/"}
-    ]
   });
 
   if(sound){
@@ -244,7 +240,7 @@ async function main(){
   //TODO: Check current settings
   var topics;
   var newComments = [];
-  
+
   // async checking for new private messages
   checkNewPrivateMessages();
   let gettingSettings = browser.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"]);
@@ -320,7 +316,7 @@ async function main(){
   } // forEach topic end
 
   //TODO: Get timeout value from settings
-  console.log("Waiting...");
+  //console.log("Waiting...");
   currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
 } //main() END
