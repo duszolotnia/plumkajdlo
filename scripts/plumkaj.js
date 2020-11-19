@@ -22,6 +22,17 @@ const AVAIL_TITLES = [
   "Psst... Ktoś o Tobie wspomniał na forum",
   "Celnie wypatrzyłem, że jest o Tobie głośno ;)"
 ];
+const AVAIL_TOPICS = [
+  "Ogólne",
+  "Wydarzenia",
+  "Sportowe",
+  "Osiągnięcia",
+  "WPA",
+  "Badania lekarskie",
+  "Strzelnice",
+  "Sprzęt",
+  "Sklepy"
+];
 //TESTING - set last checked date to a week ago
 //lastCheckedDatetime.setHours(lastCheckedDatetime.getHours() - 2);
 
@@ -165,6 +176,33 @@ function parseComment(xmlComment){
   return comment;
 }
 
+async function checkNewPrivateMessages(){
+  console.log("Sprawdzam nowe wiadomości prywatne");
+  const url = "https://braterstwo.eu/priv/";
+  var privs;
+  var id = url+ SPLIT_CHAR + parseInt((Math.random() * 10000)+1);
+  
+  fetch(url, {credentials: "include"})
+    .then(resp => resp.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
+    .then(xmlData => {
+      privs = xmlData.getElementsByTagName("tr");
+
+      if(privs){
+        for(let i=(privs.length-1); i >= 0; i--){
+          if(privs[i].innerHTML.includes("<span class='red'>(*)</span>")){
+            let username = privs[i].innerText.match(/.*\n/gi)[1].trim();
+            let msg = "Masz nową wiadomość prywatną od \""+ username +"\".\nKLiknij we mnie aby przejść do zakładki wiadomości prywatne na braterstwie";
+
+            if(SETTINGS.use_sounds) showNotification(id, "Nowa wiadomość prywatna", msg, "../media/"+SETTINGS.sound, SETTINGS.volume);
+            else showNotification(id, "Nowa wiadomość prywatna", msg)
+          }
+        }
+      }
+
+    })
+}
+
 function parseTopicTime(topic){
   var parts = topic.ostatnie.match(/\d{1,2}\D/g); //ex. "1h21m" => ["1h", "21m"], "17h" => ["17h"], "17h2m" => ["17h", "2m"]
   let literal, value;
@@ -206,6 +244,9 @@ async function main(){
   //TODO: Check current settings
   var topics;
   var newComments = [];
+  
+  // async checking for new private messages
+  checkNewPrivateMessages();
   let gettingSettings = browser.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"]);
   await gettingSettings.then(res => {
     SETTINGS.nick = res.nick;
@@ -289,6 +330,7 @@ browser.browserAction.onClicked.addListener(openPage);
 browser.notifications.onClicked.addListener(function(notificationId) {
   //console.log('Notification ' + notificationId + ' was clicked by the user');
   let notificationUrl = notificationId.split(SPLIT_CHAR)[0];
-  browser.windows.create({url: notificationUrl});
+  //browser.windows.create({url: notificationUrl});
+  browser.tabs.create({url: notificationUrl});
 });
 main();
