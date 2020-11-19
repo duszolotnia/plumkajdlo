@@ -18,10 +18,10 @@ var topicId = document.querySelector("a[title='Pokazuj nowe wypowiedzi']").href.
 function modifyFollowButton(isFollowed){
     let fb = document.getElementById("follow-topic");
     if(!isFollowed){
-        fb.innerText = "Obserwuj wątek";
+        fb.innerText = "Obserwuj wątek w Plumkadle";
         fb.title = "Kliknij aby otrzymywać powiadomienia o nowych komentarzach!";
     }else{
-        fb.innerText = "Nie obserwuj już wątku";
+        fb.innerText = "Nie obserwuj już w Plumkadle";
         fb.title = "Już obserwujesz ten wpis";
     }
 }
