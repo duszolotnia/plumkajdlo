@@ -344,9 +344,9 @@ async function main(){
           getTopic = getTopicDetails(res.followedTopics[i]);
           getTopic.then(topic => {
             let id, msg;
-            console.log("Topic primise: ", topic);
+            //console.log("Topic primise: ", topic);
             if(topic.lastCommentDatetime > freezeLastCheckedDatetime){
-              console.log("Sending notification about topic: ", topic.title);
+              //console.log("Sending notification about topic: ", topic.title);
               id = "https://braterstwo.eu/tforum/t/"+res.followedTopics[i]+"/#amv"+SPLIT_CHAR+"topicNotify";
               msg = "Użytkownik @" + topic.lastCommentUsername + " dodał komentarz do tematu: " +
               "\""+topic.title+"\"\n\n" + 
