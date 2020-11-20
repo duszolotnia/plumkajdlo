@@ -59,15 +59,28 @@ getFollowedTopics.then(res => {
         if( res.followedTopics.length ){
             let title;
             for(let i=0; i<topics.length; i++){
+
                 topicId = topics[i].querySelector("a").href.split("/")[5];
                 if(res.followedTopics.includes(topicId)){
                     bell = bellFull;
                     title = "Już obserwujesz ten wątek";
                 }else{
                     bell = bellEmpty;
-                    title = "Obserwuj wątek w plumkajdle aby otrzymywać powiadomienia o nowych komentarzach"
+                    title = "Obserwuj wątek w plumkajdle aby otrzymywać powiadomienia o nowych komentarzach";
                 }
-                topics[i].innerHTML ='<a href="javascript:void(0);" title="'+title+'" class="btn btn-xs btn-default stat-item btn-follow-small" id="follow-topic-'+topicId+'"><img id="'+topicId+'" src="'+bell+'" alt="bell"/></a> ' + topics[i].innerHTML;
+                let a = document.createElement("a");
+                a.classList = "btn btn-xs btn-default stat-item btn-follow-small";
+                a.title = title;
+                a.href = "javascript:void(0);";
+                a.id="follow-topic-"+topicId;
+
+                let img = document.createElement("img");
+                img.src = bell;
+                img.id = topicId;
+                img.alt = "bell";
+                a.appendChild(img);
+                topics[i].insertBefore(a, topics[i].childNodes[0]);
+                
                 document.getElementById(topicId).addEventListener("mouseup", handleFollowTopic);
             }
 
