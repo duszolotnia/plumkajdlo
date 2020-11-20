@@ -65,7 +65,7 @@ getFollowedTopics.then(res => {
                     title = "Już obserwujesz ten wątek";
                 }else{
                     bell = bellEmpty;
-                    title = "Obserwuj wątek w plumkadle!"
+                    title = "Obserwuj wątek w plumkajdle aby otrzymywać powiadomienia o nowych komentarzach"
                 }
                 topics[i].innerHTML ='<a href="javascript:void(0);" title="'+title+'" class="btn btn-xs btn-default stat-item btn-follow-small" id="follow-topic-'+topicId+'"><img id="'+topicId+'" src="'+bell+'" alt="bell"/></a> ' + topics[i].innerHTML;
                 document.getElementById(topicId).addEventListener("mouseup", handleFollowTopic);

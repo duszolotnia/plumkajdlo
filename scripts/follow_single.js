@@ -20,11 +20,11 @@ var topicId = document.querySelector("a[title='Pokazuj nowe wypowiedzi']").href.
 function modifyFollowButton(isFollowed){
     let fb = document.getElementById("follow-topic");
     if(!isFollowed){
-        fb.childNodes[2].innerText = "Obserwuj wątek w Plumkadle";
-        fb.title = "Kliknij aby otrzymywać powiadomienia o nowych komentarzach!";
+        fb.childNodes[2].innerText = "Obserwuj wątek w Plumkajdle";
+        fb.title = "Kliknij aby otrzymywać powiadomienia o nowych komentarzach";
         fb.childNodes[1].src = bellEmpty;
     }else{
-        fb.childNodes[2].innerText = "Nie obserwuj już w Plumkadle";
+        fb.childNodes[2].innerText = "Nie obserwuj już w Plumkajdle";
         fb.title = "Już obserwujesz ten wpis";
         fb.childNodes[1].src = bellFull;
     }
@@ -73,7 +73,7 @@ function main(){
     let getting = browser.storage.local.get("followedTopics");
     getting.then(ret => {
         if(ret.followedTopics == undefined){
-            // no topics followed and not set
+            // no topics followed and not set so topic not followed
             modifyFollowButton(false)
         }else if(ret.followedTopics.includes(topicId)){
             // topic is followed
