@@ -3,6 +3,8 @@ Plumkajdło - dodatek do przeglądarki dla członków Braterstwo.eu
 Powiadomienia dla nowych oznaczeń i komentarzy w obserwowanych postach działają wyłącznie dla
 tematów w ogólnodostępnych sekcjach czyli w:
 *Ogólne, Wydarzenia, Sportowe, Osiągnięcia, WPA, Badania lekarskie, Strzelnice, Sprzęt, Sklepy, Oferty*
+Kolorowanie komentarzy z oznaczeniem działa na całym forum.
+*oznaczenie to nick użytkownika poprzedzony znakiem '@' np. @strzelec12*
 #
 ### Historia wersji i nadchodzące funkcjonalności
 Tu znajdziesz informacje o zmianach, które występowały w wersjach:
@@ -12,7 +14,7 @@ Tu znajdziesz informacje o zmianach, które występowały w wersjach:
 	- Ustawienia do personalizacji o których imprezach/szkoleniach powiadamiać
 
 + **v1.1.0** ( ***obecna wersja stabilna*** ):
-	- Add notificatios on new private message
+	- Dodano powiadomienia na nowe wiadomości prywatne
 	- Zmieniono - Po kliknięciu w powiadomienie o nowym wpomnieniu wątek otwiera się w nowej karcie a nie oknie
 	- Dodano obserwowanie tematów (klik w ikone przy temacie)
 	- Dodano zapamiętywanie ostatniego czasu update nawet po zamknięciu przeglądarki
@@ -20,15 +22,13 @@ Tu znajdziesz informacje o zmianach, które występowały w wersjach:
 	- Filtry na doszkoleniach [@jkowa]
 	
 + v1.0.2:
-	- Fix GitHub link in options page
-	- Fix comment styling
-	- Fix permissions (source code only)
-	- Add more readable logging in release
+	- Naprawiono link do GitHuba Plumkajdła
+	- Naprawiono style wyróżnionych komentarzy
+	- Dodano czytelniejsze logi w konsoli
 	
 + v1.0.0:
 	- *Initial release*
-	- *Notifications won't work on all sections!*
-	- Notifications on new mention
-	- Coloring comments with mentions
-	- Options page for customization
+	- Powiadomienia o nowym oznaczeniu
+	- Zaznaczanie komentarzy z oznaczeniem
+	- Strona z edycją ustawień
 
