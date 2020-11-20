@@ -53,6 +53,31 @@ function modifyFollowButton(buttonId, isFollowed){
     }
 }
 
+function initializeEmpty(){
+    for(let i=0; i<topics.length; i++){
+
+        topicId = topics[i].querySelector("a").href.split("/")[5];
+        bell = bellEmpty;
+        title = "Obserwuj wątek w plumkajdle aby otrzymywać powiadomienia o nowych komentarzach";
+
+        let a = document.createElement("a");
+        a.classList = "btn btn-xs btn-default stat-item btn-follow-small";
+        a.title = title;
+        a.href = "javascript:void(0);";
+        a.id="follow-topic-"+topicId;
+
+        let img = document.createElement("img");
+        img.src = bell;
+        img.id = topicId;
+        img.alt = "bell";
+
+        a.appendChild(img);
+        topics[i].insertBefore(a, topics[i].childNodes[0]);
+        
+        document.getElementById(topicId).addEventListener("mouseup", handleFollowTopic);
+    }
+}
+
 var getFollowedTopics = browser.storage.local.get("followedTopics");
 getFollowedTopics.then(res => {
     if(res.followedTopics != undefined){
@@ -68,23 +93,33 @@ getFollowedTopics.then(res => {
                     bell = bellEmpty;
                     title = "Obserwuj wątek w plumkajdle aby otrzymywać powiadomienia o nowych komentarzach";
                 }
+
+                console.log("dodaje a");
                 let a = document.createElement("a");
                 a.classList = "btn btn-xs btn-default stat-item btn-follow-small";
                 a.title = title;
                 a.href = "javascript:void(0);";
                 a.id="follow-topic-"+topicId;
 
+                console.log("dodaje img");
                 let img = document.createElement("img");
                 img.src = bell;
                 img.id = topicId;
                 img.alt = "bell";
+
+                console.log("appendChild");
                 a.appendChild(img);
+                console.log("insert before:");
                 topics[i].insertBefore(a, topics[i].childNodes[0]);
                 
                 document.getElementById(topicId).addEventListener("mouseup", handleFollowTopic);
-            }
+           }
 
+        }else{
+            initializeEmpty();
         }
+    }else{
+        initializeEmpty();
     }
 });
 
