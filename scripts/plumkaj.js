@@ -3,7 +3,7 @@
 
 // Global variables
 var currentTimeout = false; //keeps current setTimeout id
-var lastCheckedDatetime = new Date(); //keep time of last data grab no to repeat mentions. initialize with now
+var lastCheckedDatetime = false; //keep time of last data grab no to repeat mentions. initialize with now
 var SETTINGS = {
   nick: false,
   volume: 0.3,
@@ -252,12 +252,15 @@ async function main(){
   // right away set currentTimeout to false and clear
   // SETTINGS_CHANGED FLAG indicate execution in progress
   currentTimeout = false;
-  //TODO: Check current settings
-  var topics;
-  var newComments = [];
+  // get last update time and settings
+  let letgettingLastCheckedDatetime = browser.storage.local.get("lastCheckedDatetime");
+  await letgettingLastCheckedDatetime.then(res => {
+    if(res.lastCheckedDatetime == undefined)
+      lastCheckedDatetime = new Date(); // set to now, but if settings will be empty do not save it
+    else 
+      lastCheckedDatetime = res.lastCheckedDatetime;
+  });
 
-  // async checking for new private messages
-  checkNewPrivateMessages();
   let gettingSettings = browser.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"]);
   await gettingSettings.then(res => {
     SETTINGS.nick = res.nick;
@@ -267,13 +270,18 @@ async function main(){
     SETTINGS.highlight = res.highlight;
     SETTINGS.volume = res.volume;
   })
-
+  
   // if nick not found open settings page and quit
   if(!SETTINGS.nick) {
     openPage();
     currentTimeout = setTimeout(main, 300000); // every 5 minutes by default
     return 1;
   }
+  var topics;
+  var newComments = [];
+
+  // async checking for new private messages
+  checkNewPrivateMessages();
 
   console.log("Teraz jest " + new Date());
   console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
@@ -365,6 +373,9 @@ async function main(){
   console.log("Job well done");
   currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
+  browser.storage.local.set({
+    lastCheckedDatetime: lastCheckedDatetime
+  });
 } //main() END
 
 
