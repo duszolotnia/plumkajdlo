@@ -13,7 +13,10 @@ Tu znajdziesz informacje o zmianach, które występowały w wersjach:
 	- Powiadomienia o nowych imprezach/Szkoleniach
 	- Ustawienia do personalizacji o których imprezach/szkoleniach powiadamiać
 
-+ **v1.1.0** ( ***obecna wersja stabilna*** ):
++ **v1.1.1** ( ***obecna wersja stabilna*** ):
+	- Naprawiono ikony przy tematach w ogólnodostępnych sekcjach, gdy żaden temat nie jest obserowowany
+
++ v1.1.0:
 	- Dodano powiadomienia na nowe wiadomości prywatne
 	- Zmieniono - Po kliknięciu w powiadomienie o nowym wpomnieniu wątek otwiera się w nowej karcie a nie oknie
 	- Dodano obserwowanie tematów (klik w ikone przy temacie)

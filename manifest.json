@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Plumkajdło | Braterstwo.eu",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Wyświetla powiadomienia gdy zostaniesz oznaczony w jakimś nowym poście.",
     "icons": {
       "48": "icons/braterstwo1-48.png",
@@ -54,7 +54,7 @@
     },
     "browser_specific_settings": {
         "gecko": {
-          "id": "plumkajdlo-internal@kdolech.pl"
+          "id": "plumkajdlo@kdolech.pl"
         }
     }
 }
