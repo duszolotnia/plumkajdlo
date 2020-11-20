@@ -19,14 +19,15 @@ var topicId = document.querySelector("a[title='Pokazuj nowe wypowiedzi']").href.
 
 function modifyFollowButton(isFollowed){
     let fb = document.getElementById("follow-topic");
+    console.log(fb);
     if(!isFollowed){
-        fb.childNodes[2].innerText = "Obserwuj wątek w Plumkajdle";
+        fb.childNodes[1].innerText = "Obserwuj wątek w Plumkajdle";
         fb.title = "Kliknij aby otrzymywać powiadomienia o nowych komentarzach";
-        fb.childNodes[1].src = bellEmpty;
+        fb.childNodes[0].src = bellEmpty;
     }else{
-        fb.childNodes[2].innerText = "Nie obserwuj już w Plumkajdle";
+        fb.childNodes[1].innerText = "Nie obserwuj już w Plumkajdle";
         fb.title = "Już obserwujesz ten wpis";
-        fb.childNodes[1].src = bellFull;
+        fb.childNodes[0].src = bellFull;
     }
 }
 
@@ -66,8 +67,29 @@ function main(){
     // get status
     //  if following: show it's following
     //  if not: show available to follow
-    let followHTML = '<a href="javascript:void(0);" title="Śledź w plumkajdle!" class="btn btn-xs btn-default stat-item" style="padding-top: 3px; padding-right: 7px;" id="follow-topic"> <img style="width:25px" id="'+topicId+'" src="'+bellEmpty+'" alt="bell"/><span style="display:block; float:right; margin: 5px 0px 4px 7px;" id="follow-content">zbieram dane...</span></a> ';
-    document.querySelector("h4").innerHTML = followHTML+document.querySelector("h4").innerHTML;
+
+    let a = document.createElement("a");
+    a.classList = "btn btn-xs btn-default stat-item";
+    a.title = "Śledź w plumkajdle!";
+    a.href = "javascript:void(0);";
+    a.style = "padding-top: 3px; padding-right: 7px; margin-right: 7px";
+    a.id = "follow-topic";
+
+    let img = document.createElement("img");
+    img.src = bellEmpty;
+    img.style = "width: 25px";
+    img.id = topicId;
+    img.alt = "bell";
+
+    let span = document.createElement("span");
+    span.textContent = "zbieram dane...";
+    span.style = "display:block; float:right; margin: 5px 0px 4px 7px;";
+    span.id = "follow-content";
+
+    a.appendChild(img);
+    a.appendChild(span);
+    let heading = document.querySelector("h4");
+    heading.insertBefore(a, heading.childNodes[0]);
 
     // get directly from storage/dont use messaging - it's not 'cached' so no significant speed gain
     let getting = browser.storage.local.get("followedTopics");
