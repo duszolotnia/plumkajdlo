@@ -28,7 +28,11 @@
                 "https://braterstwo.eu/tforum/sklepy/",
                 "https://braterstwo.eu/tforum/oferty/"
             ],
-            "js": ["scripts/follow.js"] 
+            "js": ["scripts/follow.js"],
+            "css": ["scripts/follow.css"]
+        },{
+            "matches": ["https://braterstwo.eu/szkolenia/"],
+            "js": ["scripts/filter_trainings.js"]
         }
     ],
     "background": {
