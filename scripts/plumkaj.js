@@ -47,9 +47,10 @@ function resetCurrentTimeout(){
   // try to clear currentTimeout only when it's in progress
   if(currentTimeout){
     clearTimeout(currentTimeout);
-    //console.log("Przerwano czekanie. Wykonywanie main() od razu...");
+    console.log("Przerwano czekanie. Wykonywanie main() od razu...");
     main();
   }
+  
 }
 
 function tableToJson(table){

@@ -32,11 +32,9 @@ function saveOptions(e) {
 
     // at the end stop current wait between main() executions and 
     // run it right away with new parameters
-    var gettingPage = chrome.runtime.getBackgroundPage();
-    gettingPage.then(w => {
+    var gettingPage = chrome.runtime.getBackgroundPage(function(w){
       w.resetCurrentTimeout();
     });
-
     
   }
   
@@ -95,8 +93,8 @@ function saveOptions(e) {
     }
 
     chrome.runtime.getBackgroundPage(function (win){
-        //console.log("Temporary settings used:");
-        //console.log(tmpSettings)
+        console.log("Temporary settings used:");
+        console.log(tmpSettings)
         if(tmpSettings.use_sounds)
           win.showNotification("https://braterstwo.eu|test-00", "To jest powiadomienie testowe!", "Ja grab, ja grab. Wisla wisla jak mnie słyszysz?\nKliknij we mnie aby przejść na stronę braterstwa.\n\nPS Nie zapomnij zapisać ustawień ;)", "../media/"+tmpSettings.sound, tmpSettings.volume);
         else
