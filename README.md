@@ -1,10 +1,10 @@
 # Plumkajdło
-Plumkajdło - dodatek do przeglądarki dla członków Braterstwo.eu
-Powiadomienia dla nowych oznaczeń i komentarzy w obserwowanych postach działają wyłącznie dla
-tematów w ogólnodostępnych sekcjach czyli w:
-*Ogólne, Wydarzenia, Sportowe, Osiągnięcia, WPA, Badania lekarskie, Strzelnice, Sprzęt, Sklepy, Oferty*
-Kolorowanie komentarzy z oznaczeniem działa na całym forum.
-*oznaczenie to nick użytkownika poprzedzony znakiem '@' np. @strzelec12*
+Plumkajdło - dodatek do przeglądarki dla członków Braterstwo.eu  
+Powiadomienia dla nowych oznaczeń i komentarzy w obserwowanych postach działają wyłącznie dla  
+tematów w ogólnodostępnych sekcjach czyli w:  
+*Ogólne, Wydarzenia, Sportowe, Osiągnięcia, WPA, Badania lekarskie, Strzelnice, Sprzęt, Sklepy, Oferty*  
+Kolorowanie komentarzy z oznaczeniem działa na całym forum.  
+*oznaczenie to nick użytkownika poprzedzony znakiem '@' np. @strzelec12*  
 #
 ### Historia wersji i nadchodzące funkcjonalności
 Tu znajdziesz informacje o zmianach, które występowały w wersjach:
