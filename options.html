@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="container" class="col-md-6" style="margin: auto; margin-top: 25px;">
+    <div id="container" class="col-md-8 col-xl-7" style="margin: auto; margin-top: 25px;">
 
       <h2 style="text-align: center;">Witaj, członku <a href="https://braterstwo.eu/" style="color: #A2997D" target="_blank">Braterstwa</a>!</h2>
       <br>
@@ -19,20 +19,24 @@
       Jest mi niezmierie miło, że zdecydowałeś się wypróbować Plumkajdło - rozszerzenie 
       do implementacji powiadomień o oznaczeniach!
       Po dokładne informacje odnośnie drogi rozwoju tego narzędzia i nadchodzących funkcji 
-      zapraszam na <a href="#" target="_blank">Plumkajdłowego Githuba!</a><br>
-      <strong>Tyle drogą wstępu. Najpierw muszę poznać Twój nick!</strong><br>
-      <br>
+      zapraszam na <a href="https://github.com/duszolotnia/plumkajdlo/" target="_blank">Plumkajdłowego Githuba!</a><br>
+      Plumkajdło może Ci wysyłać powiadomienia o <b>nowych wspomnieniach w komentarzach</b>, <b>nowych komentarzach w obserwowanych wątkach</b>
+      oraz <b>nowych wiadomościach prywatnych</b>. Teraz także dzięki Plumkajdle i koledze <a href='https://braterstwo.eu/tforum/u/jkowa/' target="_blank">@jkowa</a> możesz ustawiać filtry w doszkoleniach :D.
+      <br><br><strong>Tyle drogą wstępu. Najpierw muszę poznać Twój nick!</strong><br>
+  
     </div>
 
-<form>
-  <div class="form-group col-md-4">
-    <label for="nick">Ty: "Cześć! Na braterstwo.eu zwą mnie</label> 
-    <input id="nick" name="nick" placeholder="superStrzelec12" type="text" class="form-control" required="required">
-    <span id="colorHelpBlock" class="form-text text-muted">Tutaj nie liczy się wielkość liter</span>
+<form style="margin-top: 14px;">
+  <div class="form-group row" style="margin-left: 0;">
+    <label for="nick">Ty: "Cześć Plumkajdło! Na braterstwo.eu zwą mnie</label> 
+    <input id="nick" style="width: 25%;margin: -5px 10px;" name="nick" placeholder="superStrzelec12" type="text" class="form-control" required="required">"
+    <span id="colorHelpBlock" style="margin-left: -26%; margin-top: 35px; margin-bottom: -10px;" class="form-text text-muted">Tutaj nie liczy się wielkość liter</span>
   </div>
 
   <strong>Niżej możesz dostosować ustawienia opcjonalne:</strong><br><br>
 
+  <h5>Dźwięki powiadomień:</h5>
+  <hr>
   <div class="row">
 &nbsp;&nbsp;&nbsp;
   <div class="form-group col-md-4">
@@ -52,7 +56,7 @@
   <div class="form-group col-md-2"></div>
 
     <div class="form-group col-md-5">
-      <label>Wybierz dźwięk powiadomienia</label> 
+      <label>Wybierz dźwięk powiadomień</label> 
       <div>
         <div class="custom-control custom-radio custom-control-inline">
           <input name="sound" id="sound_0" type="radio" class="custom-control-input" value="strzala.mp3" aria-describedby="radioHelpBlock" required="required"> 
@@ -82,9 +86,10 @@
         </div>
       </div>
   </div>
-  
   <br>
 
+  <h5>Zaznaczanie nicku z komentarzach:</h5>
+  <hr>
   <div class="form-group col-md-12">
     <label>Czy podczas przeglądania forum podświetlać tekst, w którym zostałeś/łaś oznaczony/a?</label> 
     <div>
@@ -104,16 +109,14 @@
     <span id="colorHelpBlock" class="form-text text-muted">Aby zastosować zmianę zaznaczania możliwe, że będziesz musiał zrestartować przeglarkę</span>
   </div>
 
-  <br>
-
-  <div class="form-group col-md-7">
+<br>
+  <div class="form-group row" style="margin-left: 15px;">
     <label for="color">Wybierz kolor, którego będę używał do zaznaczania w/w tekstów</label> 
-    <input id="color" name="color" type="color" aria-describedby="colorHelpBlock" class="form-control"> 
+    <input id="color" style="width: 20%; margin-left: 10px; margin-top: -6px;" name="color" type="color" aria-describedby="colorHelpBlock" class="form-control"> 
     <span id="colorHelpBlock" class="form-text text-muted">Aby zastosować zmianę koloru możliwe, że będziesz musiał zrestartować przeglarkę</span>
   </div> 
 
-  <br>
-
+  
   <div class="row">
     <div class="form-group col-md-2" style="margin: auto;"></div>
     <div class="form-group col-md-2" style="margin: auto;">
@@ -126,7 +129,7 @@
     <div class="form-group col-md-3" style="margin: auto;"></div>
   </div>
 </form>
-<span style="font-size: 0.6em; color: gray">Plumkajdło v1.0.0 by Krzysztof Dolech</span>
+<span style="font-size: 0.6em; color: gray">Plumkajdło v1.1.0 by Krzysztof Dolech</span>
     </div> <!-- WRAPPER END -->
 
     <script src="../scripts/options.js"></script>

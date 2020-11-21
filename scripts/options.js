@@ -32,7 +32,7 @@ function saveOptions(e) {
 
     // at the end stop current wait between main() executions and 
     // run it right away with new parameters
-    var gettingPage = runtime.getBackgroundPage();
+    var gettingPage = chrome.runtime.getBackgroundPage();
     gettingPage.then(w => {
       w.resetCurrentTimeout();
     });

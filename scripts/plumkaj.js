@@ -3,7 +3,7 @@
 
 // Global variables
 var currentTimeout = false; //keeps current setTimeout id
-var lastCheckedDatetime = new Date(); //keep time of last data grab no to repeat mentions. initialize with now
+var lastCheckedDatetime; //keep time of last data grab no to repeat mentions. initialize with now
 var SETTINGS = {
   nick: false,
   volume: 0.3,
@@ -160,6 +160,35 @@ function parseComment(xmlComment){
   return comment;
 }
 
+async function checkNewPrivateMessages(){
+  console.log("Sprawdzam nowe wiadomości prywatne");
+  const url = "https://braterstwo.eu/priv/";
+  var privs;
+  var id = url+ SPLIT_CHAR + parseInt((Math.random() * 10000)+1);
+  
+  fetch(url, {credentials: "include"})
+    .then(resp => resp.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
+    .then(xmlData => {
+      privs = xmlData.getElementsByTagName("tr");
+
+      if(privs.length){
+        for(let i=(privs.length-1); i >= 0; i--){
+          if(privs[i].innerHTML.includes("(nowa)")){
+            let username = privs[i].innerText.match(/.*\n/gi)[1].trim();
+            let msg = "Masz nową wiadomość prywatną od \""+ username +"\".\nKLiknij we mnie aby przejść do zakładki wiadomości prywatne na braterstwie";
+
+            if(SETTINGS.use_sounds) showNotification(id, "Nowa wiadomość prywatna", msg, "../media/"+SETTINGS.sound, SETTINGS.volume);
+            else showNotification(id, "Nowa wiadomość prywatna", msg)
+          }
+        }
+      }else console.log("You have no private message threads.")
+
+      console.log("Private messages check end.");
+
+    })
+}
+
 function parseTopicTime(topic){
   var parts = topic.ostatnie.match(/\d{1,2}\D/g); //ex. "1h21m" => ["1h", "21m"], "17h" => ["17h"], "17h2m" => ["17h", "2m"]
   let literal, value;
@@ -206,6 +235,14 @@ async function main(){
   // right away set currentTimeout to false and clear
   // SETTINGS_CHANGED FLAG indicate execution in progress
   currentTimeout = false;
+  // get last update time and settings
+  await chrome.storage.local.get("lastCheckedDatetime", function(res){
+    if(res.lastCheckedDatetime == undefined)
+      lastCheckedDatetime = new Date(); // set to now, but if settings will be empty do not save it
+    else 
+      lastCheckedDatetime = res.lastCheckedDatetime;
+  });
+
   //TODO: Check current settings
   var topics;
   var newComments = [];
@@ -220,8 +257,11 @@ async function main(){
     return 1;
   }
 
-  //console.log("Teraz jest " + new Date());
-  //console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
+  // async checking for new private messages
+  checkNewPrivateMessages();
+
+  console.log("Teraz jest " + new Date());
+  console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
 
   function handleMessage(request, sender, sendResponse) {
     console.log("Message from the content script: " +
@@ -269,10 +309,48 @@ async function main(){
         else showNotification(id, pickRandomTitle(), msg);
       }
     }); //forEach comment end
+
+    // Check for updates in followed topics
+  console.log("Checking followed topics...");
+  let freezeLastCheckedDatetime = lastCheckedDatetime;
+  chrome.storage.local.get("followedTopics", function(res){
+
+      if(res.followedTopics == undefined){
+          // no topics to check - for better of universe let's set it to proper empty list
+          chrome.storage.local.set({ followedTopics: [] });
+      }else if(res.followedTopics.length){
+  
+          // if at least 1 topic is followed check if there were any updates
+          for(let i=0; i<res.followedTopics.length; i++){
+            let getTopic = getTopicDetails(res.followedTopics[i], function(topic){
+              
+            });
+            getTopic.then(topic => {
+              let id, msg;
+              //console.log("Topic primise: ", topic);
+              if(topic.lastCommentDatetime > freezeLastCheckedDatetime){
+                //console.log("Sending notification about topic: ", topic.title);
+                id = "https://braterstwo.eu/tforum/t/"+res.followedTopics[i]+"/#amv"+SPLIT_CHAR+"topicNotify";
+                msg = "Użytkownik @" + topic.lastCommentUsername + " dodał komentarz do tematu: " +
+                "\""+topic.title+"\"\n\n" + 
+                "Kliknij mnie, aby otworzyć ten wątek w nowej karcie.";
+  
+                if(SETTINGS.use_sounds) showNotification(id, "Nowy komentarz w obserwowanym wątku", msg, "../media/"+SETTINGS.sound, SETTINGS.volume);
+                else showNotification(id, "Nowy komentarz w obserwowanym wątku", msg);
+              }
+  
+            });
+          }
+  
+      } 
+
+  });
+
+
   } // forEach topic end
 
   //TODO: Get timeout value from settings
-  currentTimeout = setTimeout(main, 300000); // every 5 minutes by default
+  currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
 } //main() END
 
@@ -281,6 +359,6 @@ chrome.browserAction.onClicked.addListener(openPage);
 chrome.notifications.onClicked.addListener(function(notificationId) {
   //console.log('Notification ' + notificationId + ' was clicked by the user');
   let notificationUrl = notificationId.split(SPLIT_CHAR)[0];
-  chrome.windows.create({url: notificationUrl});
+  chrome.tabs.create({url: notificationUrl});
 });
 main();
