@@ -221,6 +221,30 @@ function pickRandomTitle(){
   return AVAIL_TITLES[randomId];
 }
 
+async function getTopicDetails(tid){
+  /* Returns object {
+    lastCommentDatetime: Date object with datetime of last comment
+    lastCommentUsername: str - username of last user to comment
+    title: str - topic title
+  } */
+  var topic = {};
+  var url = "https://braterstwo.eu/tforum/t/"+tid+"/";
+  var comment;
+
+  await fetch(url, {credentials: "omit"}) // no need for credentials since only common sections can be followed
+    .then(resp => resp.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
+    .then(xmlData => {
+      comment = xmlData.getElementsByClassName("comment");
+      comment = parseComment(comment[comment.length-1]);
+      topic.lastCommentUsername = comment.user;
+      topic.lastCommentDatetime = comment.datetime;
+      topic.title = xmlData.querySelector("h4").textContent;
+    });
+
+  return topic;
+}
+
 async function updateSettings(){
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"], function(res){
@@ -284,8 +308,7 @@ async function main(){
     }
   }
 
-  //console.log(topics.length);
-
+  // Check for mentions in newly updated topics
   for(let i=0; i<topics.length; i++){
     //console.log("Parsing topic: ", JSON.stringify(topics[i]));
 
@@ -310,12 +333,12 @@ async function main(){
         else showNotification(id, pickRandomTitle(), msg);
       }
     }); //forEach comment end
+  } // forEach topic end
 
-    // Check for updates in followed topics
+  // Check for updates in followed topics
   console.log("Checking followed topics...");
   let freezeLastCheckedDatetime = lastCheckedDatetime;
   chrome.storage.local.get("followedTopics", function(res){
-
       if(res.followedTopics == undefined){
           // no topics to check - for better of universe let's set it to proper empty list
           chrome.storage.local.set({ followedTopics: [] });
@@ -323,9 +346,7 @@ async function main(){
   
           // if at least 1 topic is followed check if there were any updates
           for(let i=0; i<res.followedTopics.length; i++){
-            let getTopic = getTopicDetails(res.followedTopics[i], function(topic){
-              
-            });
+            let getTopic = getTopicDetails(res.followedTopics[i]);
             getTopic.then(topic => {
               let id, msg;
               //console.log("Topic primise: ", topic);
@@ -346,9 +367,6 @@ async function main(){
       } 
 
   });
-
-
-  } // forEach topic end
 
   //TODO: Get timeout value from settings
   currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
