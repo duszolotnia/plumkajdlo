@@ -227,19 +227,30 @@ async function getTopicDetails(tid){
     lastCommentUsername: str - username of last user to comment
     title: str - topic title
   } */
-  var topic = {};
+  var topic = {
+    lastCommentUsername = "nouser",
+    lastCommentDatetime = new Date(0),
+    title = "notitle"
+  };
   var url = "https://braterstwo.eu/tforum/t/"+tid+"/";
   var comment;
+  var offset = 1;
 
   await fetch(url, {credentials: "omit"}) // no need for credentials since only common sections can be followed
     .then(resp => resp.text())
     .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
     .then(xmlData => {
-      comment = xmlData.getElementsByClassName("comment");
-      comment = parseComment(comment[comment.length-1]);
-      topic.lastCommentUsername = comment.user;
-      topic.lastCommentDatetime = comment.datetime;
-      topic.title = xmlData.querySelector("h4").textContent;
+      var comments = xmlData.getElementsByClassName("comment");
+      if(comments.length){
+        while(comments.length >= offset){
+          comment = parseComment(comments[comments.length-offset]);
+          topic.lastCommentUsername = comment.user;
+          topic.lastCommentDatetime = comment.datetime;
+          topic.title = xmlData.querySelector("h4").textContent;
+          offset = offset + 1;
+          if(topic.lastCommentUsername.trim() != SETTINGS.nick.trim()) break;
+        }
+      }
     });
 
   return topic;
