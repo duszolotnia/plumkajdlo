@@ -1,0 +1,5 @@
+do release v1.1.0 w chrome
+Port irefox version to chrome
+- Naprawiono ikony przy tematach w ogólnodostêpnych sekcjach, gdy ¿aden temat nie jest obserowowany
+- wiadomoœæ prywatna z (*) na (nowa)
+- pogrubienie sekcji ogólnodostêpnych

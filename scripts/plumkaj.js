@@ -3,7 +3,7 @@
 
 // Global variables
 var currentTimeout = false; //keeps current setTimeout id
-var lastCheckedDatetime = new Date(); //keep time of last data grab no to repeat mentions. initialize with now
+var lastCheckedDatetime; //keep time of last data grab no to repeat mentions. initialize with now
 var SETTINGS = {
   nick: false,
   volume: 0.3,
@@ -13,7 +13,7 @@ var SETTINGS = {
   highlight: "full",  
 }
 const SPLIT_CHAR = "|";
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 const MENTION_CHAR = "@";
 const AVAIL_TITLES = [
   "Ktoś Cię oznaczył w komentarzu!",
@@ -47,9 +47,10 @@ function resetCurrentTimeout(){
   // try to clear currentTimeout only when it's in progress
   if(currentTimeout){
     clearTimeout(currentTimeout);
-    //console.log("Przerwano czekanie. Wykonywanie main() od razu...");
+    console.log("Przerwano czekanie. Wykonywanie main() od razu...");
     main();
   }
+  
 }
 
 function tableToJson(table){
@@ -160,6 +161,35 @@ function parseComment(xmlComment){
   return comment;
 }
 
+async function checkNewPrivateMessages(){
+  console.log("Sprawdzam nowe wiadomości prywatne");
+  const url = "https://braterstwo.eu/priv/";
+  var privs;
+  var id = url+ SPLIT_CHAR + parseInt((Math.random() * 10000)+1);
+  
+  fetch(url, {credentials: "include"})
+    .then(resp => resp.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
+    .then(xmlData => {
+      privs = xmlData.getElementsByTagName("tr");
+      
+      if(privs.length){
+        for(let i=(privs.length-1); i >= 0; i--){
+          if(privs[i].innerText.includes("(nowa)")){
+            let username = privs[i].innerText.match(/.*\n/gi)[1].trim();
+            let msg = "Masz nową wiadomość prywatną od \""+ username +"\".\nKLiknij we mnie aby przejść do zakładki wiadomości prywatne na braterstwie";
+
+            if(SETTINGS.use_sounds) showNotification(id, "Nowa wiadomość prywatna", msg, "../media/"+SETTINGS.sound, SETTINGS.volume);
+            else showNotification(id, "Nowa wiadomość prywatna", msg)
+          }
+        }
+      }else console.log("You have no private message threads.")
+
+      console.log("Private messages check end.");
+
+    })
+}
+
 function parseTopicTime(topic){
   var parts = topic.ostatnie.match(/\d{1,2}\D/g); //ex. "1h21m" => ["1h", "21m"], "17h" => ["17h"], "17h2m" => ["17h", "2m"]
   let literal, value;
@@ -191,6 +221,41 @@ function pickRandomTitle(){
   return AVAIL_TITLES[randomId];
 }
 
+async function getTopicDetails(tid){
+  /* Returns object {
+    lastCommentDatetime: Date object with datetime of last comment
+    lastCommentUsername: str - username of last user to comment
+    title: str - topic title
+  } */
+  var topic = {
+    lastCommentUsername: "nouser",
+    lastCommentDatetime: new Date(0),
+    title: "notitle"
+  };
+  var url = "https://braterstwo.eu/tforum/t/"+tid+"/";
+  var comment;
+  var offset = 1;
+
+  await fetch(url, {credentials: "omit"}) // no need for credentials since only common sections can be followed
+    .then(resp => resp.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/html"))
+    .then(xmlData => {
+      var comments = xmlData.getElementsByClassName("comment");
+      if(comments.length){
+        while(comments.length >= offset){
+          comment = parseComment(comments[comments.length-offset]);
+          topic.lastCommentUsername = comment.user;
+          topic.lastCommentDatetime = comment.datetime;
+          topic.title = xmlData.querySelector("h4").textContent;
+          offset = offset + 1;
+          if(topic.lastCommentUsername.trim() != SETTINGS.nick.trim()) break;
+        }
+      }
+    });
+
+  return topic;
+}
+
 async function updateSettings(){
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["nick", "color", "use_sounds", "sound", "highlight", "volume"], function(res){
@@ -206,6 +271,16 @@ async function main(){
   // right away set currentTimeout to false and clear
   // SETTINGS_CHANGED FLAG indicate execution in progress
   currentTimeout = false;
+  // get last update time and settings
+  console.log("Getting lastCheckedDatetime");
+  await chrome.storage.local.get("lastCheckedDatetime", function(res){
+    if(res.lastCheckedDatetime == undefined)
+      lastCheckedDatetime = new Date(); // set to now, but if settings will be empty do not save it
+    else 
+      //lastCheckedDatetime = new Date();
+      lastCheckedDatetime = new Date(res.lastCheckedDatetime);
+  });
+
   //TODO: Check current settings
   var topics;
   var newComments = [];
@@ -220,8 +295,11 @@ async function main(){
     return 1;
   }
 
-  //console.log("Teraz jest " + new Date());
-  //console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
+  // async checking for new private messages
+  checkNewPrivateMessages();
+
+  console.log("Teraz jest " + new Date());
+  console.log("Ostatnie sprawdzenie forum było ", lastCheckedDatetime);
 
   function handleMessage(request, sender, sendResponse) {
     console.log("Message from the content script: " +
@@ -232,6 +310,7 @@ async function main(){
   }
   chrome.runtime.onMessage.addListener(handleMessage);
 
+  
   topics = await getActiveTopics();
   // Parse times to valid Date objects and remove old topics from list
   for(let i=0; i<topics.length; i++){
@@ -243,14 +322,14 @@ async function main(){
     }
   }
 
-  //console.log(topics.length);
-
+  console.log("Checking for new mentions...");
+  // Check for mentions in newly updated topics
   for(let i=0; i<topics.length; i++){
     //console.log("Parsing topic: ", JSON.stringify(topics[i]));
 
     // check new comments from this topic
     newComments = await getNewComments(topics[i]);
-
+    
     // for each comment check for mention in format @nick
     newComments.forEach(comment => {
       if(comment.content.toLowerCase().includes((MENTION_CHAR + SETTINGS.nick).toLowerCase())){
@@ -270,10 +349,48 @@ async function main(){
       }
     }); //forEach comment end
   } // forEach topic end
+  console.log("Done");
 
-  //TODO: Get timeout value from settings
-  currentTimeout = setTimeout(main, 300000); // every 5 minutes by default
+  // Check for updates in followed topics
+  console.log("Checking followed topics...");
+  let freezeLastCheckedDatetime = lastCheckedDatetime;
+  chrome.storage.local.get("followedTopics", function(res){
+      if(res.followedTopics == undefined){
+          // no topics to check - for better of universe let's set it to proper empty list
+          chrome.storage.local.set({ followedTopics: [] });
+      }else if(res.followedTopics.length){
+  
+          // if at least 1 topic is followed check if there were any updates
+          for(let i=0; i<res.followedTopics.length; i++){
+            let getTopic = getTopicDetails(res.followedTopics[i]);
+            getTopic.then(topic => {
+              let id, msg;
+              //console.log("Topic primise: ", topic);
+              if(topic.lastCommentDatetime > freezeLastCheckedDatetime){
+                //console.log("Sending notification about topic: ", topic.title);
+                id = "https://braterstwo.eu/tforum/t/"+res.followedTopics[i]+"/#amv"+SPLIT_CHAR+"topicNotify";
+                msg = "Użytkownik @" + topic.lastCommentUsername + " dodał komentarz do tematu: " +
+                "\""+topic.title+"\"\n\n" + 
+                "Kliknij mnie, aby otworzyć ten wątek w nowej karcie.";
+  
+                if(SETTINGS.use_sounds) showNotification(id, "Nowy komentarz w obserwowanym wątku", msg, "../media/"+SETTINGS.sound, SETTINGS.volume);
+                else showNotification(id, "Nowy komentarz w obserwowanym wątku", msg);
+              }
+  
+            });
+          }
+  
+      } 
+
+  });
+  console.log("Done.");
+
+  console.log("Job well done");
+  currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
+  chrome.storage.local.set({
+    lastCheckedDatetime: lastCheckedDatetime.getTime() //store in ms since 00:00 01.01.1970 because Chrome reaaaaly does not like storing objects
+  });
 } //main() END
 
 
@@ -281,6 +398,6 @@ chrome.browserAction.onClicked.addListener(openPage);
 chrome.notifications.onClicked.addListener(function(notificationId) {
   //console.log('Notification ' + notificationId + ' was clicked by the user');
   let notificationUrl = notificationId.split(SPLIT_CHAR)[0];
-  chrome.windows.create({url: notificationUrl});
+  chrome.tabs.create({url: notificationUrl});
 });
 main();

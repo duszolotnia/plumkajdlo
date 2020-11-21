@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Plumkajdło | Braterstwo.eu",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Wyświetla powiadomienia gdy zostaniesz oznaczony w jakimś nowym poście.",
     "icons": {
       "48": "icons/braterstwo1-48.png",
@@ -12,12 +12,30 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://braterstwo.eu/tforum/t/*"],
-            "js": ["scripts/highlighter.js"]
-        },
-        {
-            "matches": ["*://braterstwo.eu/szkolenia/"],
+            "matches": ["https://braterstwo.eu/tforum/t/*"],
+            "js": ["scripts/highlighter.js", 
+                   "scripts/follow_single.js"]
+        },{
+            "matches": [
+                "https://braterstwo.eu/tforum/ogolne/",
+                "https://braterstwo.eu/tforum/wydarzenia/",
+                "https://braterstwo.eu/tforum/sportowe/",
+                "https://braterstwo.eu/tforum/osiagniecia/",
+                "https://braterstwo.eu/tforum/wpa/",
+                "https://braterstwo.eu/tforum/lekarze/",
+                "https://braterstwo.eu/tforum/strzelnice/",
+                "https://braterstwo.eu/tforum/sprzet/",
+                "https://braterstwo.eu/tforum/sklepy/",
+                "https://braterstwo.eu/tforum/oferty/"
+            ],
+            "js": ["scripts/follow.js"],
+            "css": ["scripts/follow.css"]
+        },{
+            "matches": ["https://braterstwo.eu/szkolenia/"],
             "js": ["scripts/filter_trainings.js"]
+        },{
+            "matches": ["https://braterstwo.eu/tforum/"],
+            "js": ["scripts/bold.js"]
         }
     ],
     "background": {
@@ -28,7 +46,8 @@
     },
     "permissions": [
         "notifications",
-        "storage"
+        "storage",
+        "https://braterstwo.eu/*"
     ],
     "browser_action": {
         "default_icon": {
