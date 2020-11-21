@@ -175,7 +175,8 @@ async function checkNewPrivateMessages(){
 
       if(privs.length){
         for(let i=(privs.length-1); i >= 0; i--){
-          if(privs[i].innerHTML.includes("(nowa)")){
+          if(privs[i].innerText.includes("(nowa)")){
+
             let username = privs[i].innerText.match(/.*\n/gi)[1].trim();
             let msg = "Masz nową wiadomość prywatną od \""+ username +"\".\nKLiknij we mnie aby przejść do zakładki wiadomości prywatne na braterstwie";
 
