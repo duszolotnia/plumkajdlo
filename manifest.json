@@ -33,6 +33,9 @@
         },{
             "matches": ["https://braterstwo.eu/szkolenia/"],
             "js": ["scripts/filter_trainings.js"]
+        },{
+            "matches": ["https://braterstwo.eu/tforum/"],
+            "js": ["scripts/bold.js"]
         }
     ],
     "background": {
