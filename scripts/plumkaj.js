@@ -229,9 +229,9 @@ async function getTopicDetails(tid){
     title: str - topic title
   } */
   var topic = {
-    lastCommentUsername = "nouser",
-    lastCommentDatetime = new Date(0),
-    title = "notitle"
+    lastCommentUsername: "nouser",
+    lastCommentDatetime: new Date(0),
+    title: "notitle"
   };
   var url = "https://braterstwo.eu/tforum/t/"+tid+"/";
   var comment;
