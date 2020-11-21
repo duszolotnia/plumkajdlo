@@ -13,7 +13,7 @@ var SETTINGS = {
   highlight: "full",  
 }
 const SPLIT_CHAR = "|";
-const VERSION = "1.1.1";
+const VERSION = "1.1.2";
 const MENTION_CHAR = "@";
 const AVAIL_TITLES = [
   "Ktoś Cię oznaczył w komentarzu!",

@@ -13,7 +13,12 @@ Tu znajdziesz informacje o zmianach, które występowały w wersjach:
 	- Powiadomienia o nowych imprezach/Szkoleniach
 	- Ustawienia do personalizacji o których imprezach/szkoleniach powiadamiać
 
-+ **v1.1.1** ( ***obecna wersja stabilna*** ):
++ **v1.1.2** ( ***obecna wersja stabilna*** ):
+	- Naprawiono szukanie nowych wiadomości prywatnych
+	- Dodano pogrubienie przy ogólnodostępnych sekcjach
+	- Dodano ignorowanie powiadomień na swoje wpisy w obserwowanych tematach
+
++ v1.1.1:
 	- Naprawiono ikony przy tematach w ogólnodostępnych sekcjach, gdy żaden temat nie jest obserowowany
 
 + v1.1.0:
