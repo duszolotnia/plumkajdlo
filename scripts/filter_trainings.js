@@ -1,3 +1,6 @@
+/*
+* Code by jkowa: https://github.com/jkowa/plumkajdlo
+*/
 function getGunsList(trainingsTable) {
     var elements = Array.from(trainingsTable.querySelectorAll("td:nth-child(3) > span")).map(function(node) {return node.textContent;});
     return elements.filter(function(item, pos) { return elements.indexOf(item) == pos; }).sort();
