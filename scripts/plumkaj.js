@@ -261,11 +261,13 @@ async function main(){
   // SETTINGS_CHANGED FLAG indicate execution in progress
   currentTimeout = false;
   // get last update time and settings
+  console.log("Getting lastCheckedDatetime");
   await chrome.storage.local.get("lastCheckedDatetime", function(res){
     if(res.lastCheckedDatetime == undefined)
       lastCheckedDatetime = new Date(); // set to now, but if settings will be empty do not save it
     else 
-      lastCheckedDatetime = res.lastCheckedDatetime;
+      //lastCheckedDatetime = new Date();
+      lastCheckedDatetime = new Date(res.lastCheckedDatetime);
   });
 
   //TODO: Check current settings
@@ -286,7 +288,7 @@ async function main(){
   checkNewPrivateMessages();
 
   console.log("Teraz jest " + new Date());
-  console.log("Ostatnie sprawdzenie forum było " + lastCheckedDatetime);
+  console.log("Ostatnie sprawdzenie forum było ", lastCheckedDatetime);
 
   function handleMessage(request, sender, sendResponse) {
     console.log("Message from the content script: " +
@@ -297,6 +299,7 @@ async function main(){
   }
   chrome.runtime.onMessage.addListener(handleMessage);
 
+  
   topics = await getActiveTopics();
   // Parse times to valid Date objects and remove old topics from list
   for(let i=0; i<topics.length; i++){
@@ -308,13 +311,14 @@ async function main(){
     }
   }
 
+  console.log("Checking for new mentions...");
   // Check for mentions in newly updated topics
   for(let i=0; i<topics.length; i++){
     //console.log("Parsing topic: ", JSON.stringify(topics[i]));
 
     // check new comments from this topic
     newComments = await getNewComments(topics[i]);
-
+    
     // for each comment check for mention in format @nick
     newComments.forEach(comment => {
       if(comment.content.toLowerCase().includes((MENTION_CHAR + SETTINGS.nick).toLowerCase())){
@@ -334,6 +338,7 @@ async function main(){
       }
     }); //forEach comment end
   } // forEach topic end
+  console.log("Done");
 
   // Check for updates in followed topics
   console.log("Checking followed topics...");
@@ -367,10 +372,14 @@ async function main(){
       } 
 
   });
+  console.log("Done.");
 
-  //TODO: Get timeout value from settings
+  console.log("Job well done");
   currentTimeout = setTimeout(main, 120000); // every 2 minutes by default
   lastCheckedDatetime = new Date(); // update last checked date
+  chrome.storage.local.set({
+    lastCheckedDatetime: lastCheckedDatetime.getTime() //store in ms since 00:00 01.01.1970 because Chrome reaaaaly does not like storing objects
+  });
 } //main() END
 
 
