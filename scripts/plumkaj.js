@@ -13,7 +13,7 @@ var SETTINGS = {
   highlight: "full",  
 }
 const SPLIT_CHAR = "|";
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 const MENTION_CHAR = "@";
 const AVAIL_TITLES = [
   "Ktoś Cię oznaczył w komentarzu!",
@@ -228,9 +228,9 @@ async function getTopicDetails(tid){
     title: str - topic title
   } */
   var topic = {
-    lastCommentUsername = "nouser",
-    lastCommentDatetime = new Date(0),
-    title = "notitle"
+    lastCommentUsername: "nouser",
+    lastCommentDatetime: new Date(0),
+    title: "notitle"
   };
   var url = "https://braterstwo.eu/tforum/t/"+tid+"/";
   var comment;
