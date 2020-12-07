@@ -21,11 +21,11 @@ function modifyFollowButton(isFollowed){
     let fb = document.getElementById("follow-topic");
     console.log(fb);
     if(!isFollowed){
-        fb.childNodes[1].innerText = "Obserwuj wątek w Plumkajdle";
+        //fb.childNodes[1].innerText = "Obserwuj wątek w Plumkajdle";
         fb.title = "Kliknij aby otrzymywać powiadomienia o nowych komentarzach";
         fb.childNodes[0].src = bellEmpty;
     }else{
-        fb.childNodes[1].innerText = "Nie obserwuj już w Plumkajdle";
+        //fb.childNodes[1].innerText = "Nie obserwuj już w Plumkajdle";
         fb.title = "Już obserwujesz ten wpis";
         fb.childNodes[0].src = bellFull;
     }
@@ -82,7 +82,7 @@ function main(){
     img.alt = "bell";
 
     let span = document.createElement("span");
-    span.textContent = "zbieram dane...";
+    //span.textContent = "zbieram dane...";
     span.style = "display:block; float:right; margin: 5px 0px 4px 7px;";
     span.id = "follow-content";
 
