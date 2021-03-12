@@ -2,6 +2,7 @@
  * must check if topic is in one of the 'common' sections */
 // nazwy sekcji dostępnych bez zalogowania
 var COMMON_SECTIONS = [
+    "Ogłoszenia",
     "Ogólne",
     "Wydarzenia",
     "Sportowe",
